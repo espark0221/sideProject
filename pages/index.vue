@@ -1,27 +1,33 @@
 <template>
-<!--  <modal-component v-model="modalShow"/>-->
-<!--  <input-group-component/>-->
-<!--  <table-component />-->
-  <book-list />
+  <section>
+    <div id="test">
+      <table-component id="table"></table-component>
+    </div>
+  </section>
 </template>
 
 <script>
-// import ModalComponent from '@/components/bootstrap/modalComponent'
-// import inputGroupComponent from '@/components/bootstrap/inputGroupComponent'
-// import tableComponent from '@/components/bootstrap/tableComponent'
-import bookList from '~/components/test/bookList'
+import tableComponent from '@/components/bootstrap/tableComponent'
 export default {
   name: 'IndexPage',
   components: {
-    // ModalComponent,
-    // inputGroupComponent,
-    // tableComponent,
-    bookList
+    tableComponent
   },
   data () {
     return {
-      modalShow: false
     }
   }
 }
 </script>
+<style>
+#test{
+  margin-top: 150px;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+#table{
+  text-align: center;
+  width: 60%;
+  margin: auto;
+}
+</style>

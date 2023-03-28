@@ -1,75 +1,93 @@
 <template>
-<b-table-simple hover small caption-top responsive>
-  <caption>Items sold in August, grouped by Country and City:</caption>
-  <colgroup><col><col></colgroup>
-  <colgroup><col><col><col></colgroup>
-  <colgroup><col><col></colgroup>
-  <b-thead head-variant="dark">
-    <b-tr>
-      <b-th colspan="2">Region</b-th>
-      <b-th colspan="3">Clothes</b-th>
-      <b-th colspan="2">Accessories</b-th>
-    </b-tr>
-    <b-tr>
-      <b-th>Country</b-th>
-      <b-th>City</b-th>
-      <b-th>Trousers</b-th>
-      <b-th>Skirts</b-th>
-      <b-th>Dresses</b-th>
-      <b-th>Bracelets</b-th>
-      <b-th>Rings</b-th>
-    </b-tr>
-  </b-thead>
-  <b-tbody>
-    <b-tr>
-      <b-th rowspan="3">Belgium</b-th>
-      <b-th class="text-right">Antwerp</b-th>
-      <b-td>56</b-td>
-      <b-td>22</b-td>
-      <b-td>43</b-td>
-      <b-td variant="success">72</b-td>
-      <b-td>23</b-td>
-    </b-tr>
-    <b-tr>
-      <b-th class="text-right">Gent</b-th>
-      <b-td>46</b-td>
-      <b-td variant="warning">18</b-td>
-      <b-td>50</b-td>
-      <b-td>61</b-td>
-      <b-td variant="danger">15</b-td>
-    </b-tr>
-    <b-tr>
-      <b-th class="text-right">Brussels</b-th>
-      <b-td>51</b-td>
-      <b-td>27</b-td>
-      <b-td>38</b-td>
-      <b-td>69</b-td>
-      <b-td>28</b-td>
-    </b-tr>
-    <b-tr>
-      <b-th rowspan="2">The Netherlands</b-th>
-      <b-th class="text-right">Amsterdam</b-th>
-      <b-td variant="success">89</b-td>
-      <b-td>34</b-td>
-      <b-td>69</b-td>
-      <b-td>85</b-td>
-      <b-td>38</b-td>
-    </b-tr>
-    <b-tr>
-      <b-th class="text-right">Utrecht</b-th>
-      <b-td>80</b-td>
-      <b-td variant="danger">12</b-td>
-      <b-td>43</b-td>
-      <b-td>36</b-td>
-      <b-td variant="warning">19</b-td>
-    </b-tr>
-  </b-tbody>
-  <b-tfoot>
-    <b-tr>
-      <b-td colspan="7" variant="secondary" class="text-right">
-        Total Rows: <b>5</b>
-      </b-td>
-    </b-tr>
-  </b-tfoot>
-</b-table-simple>
+  <div>
+    <b-form-group
+      label-for="select"
+      label-cols-md="4"
+    >
+      <div>
+        <b-form-select
+          id="select"
+          v-model="teamSelect"
+          :options="team"
+        ></b-form-select>
+        <b-form-select
+          id="select"
+          v-model="checkSelect"
+          :options="checkOutYn"
+        ></b-form-select>
+      </div>
+    </b-form-group>
+
+    <b-table
+      :items="items"
+      :fields="fields"
+      :select-mode="selectMode"
+      responsive="sm"
+      ref="selectableTable"
+      selectable
+      @row-selected="onRowSelected"
+    >
+      <!-- Example scoped slot for select state illustrative purposes -->
+      <template #cell(selected)="{ rowSelected }">
+        <template v-if="rowSelected">
+          <span aria-hidden="true">&check;</span>
+          <span class="sr-only">Selected</span>
+        </template>
+        <template v-else>
+          <span aria-hidden="true">&nbsp;</span>
+          <span class="sr-only">Not selected</span>
+        </template>
+      </template>
+    </b-table>
+    <p>
+<!--      <b-button size="sm" @click="selectAllRows">Select all</b-button>-->
+<!--      <b-button size="sm" @click="clearSelected">Clear selected</b-button>-->
+<!--      <b-button size="sm" @click="selectThirdRow">Select 3rd row</b-button>-->
+<!--      <b-button size="sm" @click="unselectThirdRow">Unselect 3rd row</b-button>-->
+    </p>
+<!--    <p>-->
+<!--      Selected Rows:<br>-->
+<!--      {{ selected }}-->
+<!--    </p>-->
+  </div>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      team: ['팀별도서', 'FE팀', 'BE팀', 'UI팀', 'DX팀', '운영팀', '관리팀'],
+      checkOutYn: ['대여여부', '대여', '반납', '대여중'],
+      fields: ['최신인기여부', '번호', '도서명', '대여여부'],
+      items: [
+        { 최신인기여부: '최신', 번호: 40, 도서명: 'bookOne', 대여여부: '대여' },
+        { 최신인기여부: '인기', 번호: 21, 도서명: 'bookTwo', 대여여부: '반납' },
+        { 최신인기여부: '최신', 번호: 89, 도서명: 'bookThree', 대여여부: '대여중' },
+        { 최신인기여부: '인기', 번호: 38, 도서명: 'bookFour', 대여여부: '반납' }
+      ],
+      teamSelect: '팀별도서',
+      checkSelect: '대여여부',
+      selected: []
+    }
+  },
+  methods: {
+    onRowSelected (items) {
+      this.selected = items
+    },
+    selectAllRows () {
+      this.$refs.selectableTable.selectAllRows()
+    },
+    clearSelected () {
+      this.$refs.selectableTable.clearSelected()
+    },
+    selectThirdRow () {
+      // Rows are indexed from 0, so the third row is index 2
+      this.$refs.selectableTable.selectRow(2)
+    },
+    unselectThirdRow () {
+      // Rows are indexed from 0, so the third row is index 2
+      this.$refs.selectableTable.unselectRow(2)
+    }
+  }
+}
+</script>
