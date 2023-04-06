@@ -2,32 +2,34 @@
   <div>
     <b-form-group
       label-for="select"
-      label-cols-md="4"
     >
-      <div>
+      <div id="select">
         <b-form-select
-          id="select"
           v-model="teamSelect"
           :options="team"
         ></b-form-select>
         <b-form-select
-          id="select"
           v-model="checkSelect"
           :options="checkOutYn"
         ></b-form-select>
+        <b-form-input
+          v-model="searchText"
+          placeholder="검색어를 입력해주세요"
+        ></b-form-input>
+        <b-button id="searchBtn" class="btn btn-dark" @click="search()">검색</b-button>
       </div>
+
     </b-form-group>
 
     <b-table
       :items="items"
       :fields="fields"
-      :select-mode="selectMode"
+      :select-mode="`multi`"
       responsive="sm"
       ref="selectableTable"
       selectable
       @row-selected="onRowSelected"
     >
-      <!-- Example scoped slot for select state illustrative purposes -->
       <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span aria-hidden="true">&check;</span>
@@ -40,15 +42,11 @@
       </template>
     </b-table>
     <p>
-<!--      <b-button size="sm" @click="selectAllRows">Select all</b-button>-->
+      <!--      <b-button size="sm" @click="selectAllRows">Select all</b-button>-->
 <!--      <b-button size="sm" @click="clearSelected">Clear selected</b-button>-->
 <!--      <b-button size="sm" @click="selectThirdRow">Select 3rd row</b-button>-->
 <!--      <b-button size="sm" @click="unselectThirdRow">Unselect 3rd row</b-button>-->
     </p>
-<!--    <p>-->
-<!--      Selected Rows:<br>-->
-<!--      {{ selected }}-->
-<!--    </p>-->
   </div>
 </template>
 
@@ -56,8 +54,19 @@
 export default {
   data () {
     return {
-      team: ['팀별도서', 'FE팀', 'BE팀', 'UI팀', 'DX팀', '운영팀', '관리팀'],
-      checkOutYn: ['대여여부', '대여', '반납', '대여중'],
+      // team: ['팀별도서', 'FE팀', 'BE팀', 'UI팀', 'DX팀', '운영팀', '관리팀'],
+      team: [
+        { value: null, text: '최신 인기 여부', disabled: true },
+        { value: '최신', text: '최신' },
+        { value: '인기', text: '인기' }
+      ],
+      // checkOutYn: ['대여여부', '대여', '반납', '대여중'],
+      checkOutYn: [
+        { value: null, text: '대여여부', disabled: true },
+        { value: 'checkout', text: '대여' },
+        { value: 'return', text: '반납' },
+        { value: 'UI', text: '대여중' }
+      ],
       fields: ['최신인기여부', '번호', '도서명', '대여여부'],
       items: [
         { 최신인기여부: '최신', 번호: 40, 도서명: 'bookOne', 대여여부: '대여' },
@@ -65,12 +74,18 @@ export default {
         { 최신인기여부: '최신', 번호: 89, 도서명: 'bookThree', 대여여부: '대여중' },
         { 최신인기여부: '인기', 번호: 38, 도서명: 'bookFour', 대여여부: '반납' }
       ],
-      teamSelect: '팀별도서',
-      checkSelect: '대여여부',
-      selected: []
+      teamSelect: null,
+      checkSelect: null,
+      selected: [],
+      searchText: ''
     }
   },
   methods: {
+    search () {
+      console.log(this.teamSelect)
+      console.log(this.checkSelect)
+      console.log(this.searchText)
+    },
     onRowSelected (items) {
       this.selected = items
     },
@@ -81,13 +96,19 @@ export default {
       this.$refs.selectableTable.clearSelected()
     },
     selectThirdRow () {
-      // Rows are indexed from 0, so the third row is index 2
       this.$refs.selectableTable.selectRow(2)
     },
     unselectThirdRow () {
-      // Rows are indexed from 0, so the third row is index 2
       this.$refs.selectableTable.unselectRow(2)
     }
   }
 }
 </script>
+<style>
+.custom-select{
+  width: 30%;
+}
+.form-control{
+  width: 0px;
+}
+</style>
